@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<style>
+		body{
+			margin:0;padding:0;
+			overflow: hidden;
+		}
+		canvas{
+			background: #000;
+		}
+	</style>
+	<script>
+		window.onload=function(){
+			var canvas = document.querySelector("canvas")
+			var cobj= canvas.getContext('2d');
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			
+			
+			
+			var mousePosition = {//鼠标位置对象
+				x: canvas.width/2,
+				y: canvas.height/2
+			};
+			function arc(){
+				this.r=5+3*Math.random()
+				this.x=mousePosition.x;
+				this.y=mousePosition.y;
+				this.speedx=10*Math.random()-5
+				this.speedy=-(5+3*Math.random())
+//				this.color="rgb("+parseInt(255*Math.random())+","+parseInt(255*Math.random())+","+parseInt(255*Math.random())+")"
+				this.color=1;
+				this.speed=0.6;
+			}
+			arc.prototype={
+				draw:function(){
+					cobj.save();
+					cobj.beginPath();
+					cobj.arc(this.x,this.y,this.r,0,2*Math.PI);
+					cobj.fillStyle = 'hsl('+this.color+',100%,50%)';
+//					cobj.fillStyle=this.color;
+					cobj.fill()
+					cobj.restore();
+				},
+				updata:function(){
+					this.speedy+=this.speed;
+					this.x+=this.speedx;
+					this.y+=this.speedy;
+				}
+			}
+			
+			var arr=[];
+			
+			setInterval(function(){
+				cobj.clearRect(0,0,canvas.width,canvas.height);
+				var arc1=new arc();
+				arr.push(arc1)
+				for(var i=0;i<arr.length;i++){
+					arr[i].draw();
+					arr[i].updata();
+					arr[i].color += 2;
+					if(arr.length>100){
+						arr.shift();
+					}
+				}
+			},20)
+			
+			canvas.onmousemove=function(e){
+				mousePosition.x = e.offsetX;
+	    		mousePosition.y = e.offsetY;
+			}
+			canvas.onmouseleave=function(){
+				mousePosition.x = canvas.width/2;
+	    		mousePosition.y = canvas.height/2;
+			}
+		}
+	</script>
+	<body>
+		<canvas></canvas>
+	</body>
+</html>
